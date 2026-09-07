@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'models/objek_wisata.dart';
-import 'data/wisata_data.dart';
-import 'widgets/objek_wisata_card.dart';
-import 'widgets/penghitung_tiket.dart';
+import 'screens/splash_screen.dart';
 import 'utils/app_colors.dart';
 
 void main() {
@@ -19,50 +16,22 @@ class TravioApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: AppColors.primary,
-        scaffoldBackgroundColor: AppColors.secondary.withOpacity(0.08),
+        scaffoldBackgroundColor: AppColors.surface,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: AppColors.primary,
+          primary: AppColors.primary,
+          secondary: AppColors.secondary,
+          surface: AppColors.surface,
+        ),
         appBarTheme: const AppBarTheme(
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
+          backgroundColor: Colors.white,
+          foregroundColor: Color(0xFF1A1A2E),
           elevation: 0,
+          surfaceTintColor: Colors.transparent,
         ),
         useMaterial3: true,
       ),
-      home: const HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final ObjekWisata wisata = getSampleWisata();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Travio'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            ObjekWisataCard(
-              namaObjek: wisata.namaObjek,
-              jenis: wisata.jenis,
-              tiketDewasa: wisata.tiketDewasa,
-              tiketAnak: wisata.tiketAnak,
-              kuotaHarian: wisata.kuotaHarian,
-            ),
-            const SizedBox(height: 16),
-            PenghitungTiket(
-              namaObjek: wisata.namaObjek,
-              hargaDewasa: wisata.tiketDewasa,
-              hargaAnak: wisata.tiketAnak,
-            ),
-          ],
-        ),
-      ),
+      home: const SplashScreen(),
     );
   }
 }

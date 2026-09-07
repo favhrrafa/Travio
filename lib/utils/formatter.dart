@@ -1,5 +1,5 @@
-// Fungsi untuk memformat angka menjadi format Rupiah, misalnya:
-// 15000 -> "Rp15.000"
+/// Memformat angka menjadi format Rupiah.
+/// Contoh: 15000 → "Rp15.000"
 String formatRupiah(int nilai) {
   String angka = nilai.toString();
   String hasil = "";
@@ -14,4 +14,14 @@ String formatRupiah(int nilai) {
   }
 
   return "Rp$hasil";
+}
+
+/// Memformat jumlah ulasan menjadi singkatan yang mudah dibaca.
+/// Contoh: 1200 → "1.2k", 500 → "500"
+String formatUlasan(int jumlah) {
+  if (jumlah >= 1000) {
+    final double nilai = jumlah / 1000;
+    return '${nilai.toStringAsFixed(1)}k';
+  }
+  return jumlah.toString();
 }
