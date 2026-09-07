@@ -183,69 +183,10 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Widget _buildLogoWidget() {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        // Cincin luar (glow)
-        Container(
-          width: 148,
-          height: 148,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.primary.withOpacity(0.14),
-          ),
-        ),
-        // Cincin tengah
-        Container(
-          width: 122,
-          height: 122,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.primary.withOpacity(0.22),
-          ),
-        ),
-        // Lingkaran utama dengan gradient
-        Container(
-          width: 96,
-          height: 96,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [AppColors.primary, AppColors.accent],
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary.withOpacity(0.5),
-                blurRadius: 28,
-                offset: const Offset(0, 12),
-              ),
-            ],
-          ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Positioned(
-                bottom: 16,
-                child: Icon(
-                  Icons.waves,
-                  color: Colors.white.withOpacity(0.45),
-                  size: 26,
-                ),
-              ),
-              const Positioned(
-                top: 17,
-                child: Icon(
-                  Icons.flight,
-                  color: Colors.white,
-                  size: 38,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
+    return Image.asset(
+      'assets/icons/icon.png',
+      width: 240,
+      fit: BoxFit.contain,
     );
   }
 
@@ -258,16 +199,6 @@ class _SplashScreenState extends State<SplashScreen>
       ),
       child: Column(
         children: [
-          const Text(
-            'Travio',
-            style: TextStyle(
-              fontSize: 46,
-              fontWeight: FontWeight.w800,
-              color: AppColors.accent,
-              letterSpacing: 1.5,
-            ),
-          ),
-          const SizedBox(height: 8),
           Text(
             'Explore More, Pay Smarter.',
             style: TextStyle(

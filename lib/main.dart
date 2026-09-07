@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'screens/splash_screen.dart';
 import 'utils/app_colors.dart';
 
+import 'package:google_fonts/google_fonts.dart';
+
 void main() {
   runApp(const TravioApp());
 }
@@ -15,6 +17,9 @@ class TravioApp extends StatelessWidget {
       title: 'Travio',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        textTheme: GoogleFonts.nunitoTextTheme(
+          Theme.of(context).textTheme,
+        ),
         primaryColor: AppColors.primary,
         scaffoldBackgroundColor: AppColors.surface,
         colorScheme: ColorScheme.fromSeed(
