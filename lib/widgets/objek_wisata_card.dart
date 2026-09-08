@@ -66,10 +66,7 @@ class ObjekWisataCard extends StatelessWidget {
           style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 2),
-        Text(
-          jenis,
-          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-        ),
+        Text(jenis, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
         const SizedBox(height: 2),
         Text(
           'Kuota: $kuotaHarian orang/hari',

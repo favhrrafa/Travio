@@ -3,6 +3,8 @@ import '../data/wisata_data.dart';
 import '../models/objek_wisata.dart';
 import '../utils/app_colors.dart';
 import '../utils/formatter.dart';
+import 'destinasi_screen.dart';
+import 'detail_screen.dart';
 
 /// Halaman Beranda — halaman utama aplikasi Travio.
 ///
@@ -81,6 +83,15 @@ class _BerandaScreenState extends State<BerandaScreen> {
 
   void _onNavTap(int index) {
     if (index == _selectedNavIndex) return;
+    // Tab Destinasi (index 1) → navigasi ke halaman Destinasi
+    if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const DestinasiScreen()),
+      );
+      return;
+    }
+    // Tab lain belum tersedia
     if (index != 0) {
       _showComingSoonSnackbar();
       return;
@@ -472,7 +483,16 @@ class _BerandaScreenState extends State<BerandaScreen> {
             )
           else
             GestureDetector(
-              onTap: _showComingSoonSnackbar,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DestinasiScreen(
+                      initialKategori: _selectedCategory,
+                    ),
+                  ),
+                );
+              },
               child: const Row(
                 children: [
                   Text(
@@ -512,7 +532,13 @@ class _BerandaScreenState extends State<BerandaScreen> {
 
   Widget _buildKartuPopuler(ObjekWisata wisata) {
     return GestureDetector(
-      onTap: _showComingSoonSnackbar,
+      // Navigasi ke halaman detail saat card ditekan
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DetailScreen(wisata: wisata),
+        ),
+      ),
       child: Container(
         width: 174,
         margin: const EdgeInsets.only(right: 14),

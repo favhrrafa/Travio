@@ -85,7 +85,7 @@ class _SplashScreenState extends State<SplashScreen>
     super.dispose();
   }
 
-  // ── Build ───────────────────────────────────────────────────
+  // ── Build 
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +115,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  // ── Background Decorative Circles ───────────────────────────
+  // ── Background Decorative Circles 
 
   Widget _buildBackgroundDecorations() {
     return Stack(
@@ -156,7 +156,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  // ── Center Content ──────────────────────────────────────────
+  // ── Center Content 
 
   Widget _buildContent() {
     return Center(
@@ -183,7 +183,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  // ── Bottom tagline ──────────────────────────────────────────
+  // ── Bottom Tagline
 
   Widget _buildBottomTagline() {
     return Positioned(

@@ -79,13 +79,19 @@ class _PenghitungTiketState extends State<PenghitungTiket> {
           const SizedBox(height: 4),
           Text(widget.namaObjek, style: TextStyle(color: Colors.grey[600])),
           const SizedBox(height: 16),
-          const Text('Jumlah Pengunjung', style: TextStyle(fontWeight: FontWeight.w600)),
+          const Text(
+            'Jumlah Pengunjung',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
           const SizedBox(height: 8),
           buildJumlahRow('Dewasa', jumlahDewasa, tambahDewasa, kurangDewasa),
           const SizedBox(height: 8),
           buildJumlahRow('Anak', jumlahAnak, tambahAnak, kurangAnak),
           const Divider(height: 24),
-          const Text('Rincian Harga', style: TextStyle(fontWeight: FontWeight.w600)),
+          const Text(
+            'Rincian Harga',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
           const SizedBox(height: 8),
           buildRincianRow(
             'Tiket Dewasa (${formatRupiah(widget.hargaDewasa)})',
@@ -103,7 +109,12 @@ class _PenghitungTiketState extends State<PenghitungTiket> {
   }
 
   // Baris kontrol jumlah pengunjung dengan tombol bulat -/+.
-  Widget buildJumlahRow(String label, int jumlah, VoidCallback onTambah, VoidCallback onKurang) {
+  Widget buildJumlahRow(
+    String label,
+    int jumlah,
+    VoidCallback onTambah,
+    VoidCallback onKurang,
+  ) {
     return Row(
       children: [
         Expanded(child: Text(label)),
@@ -161,10 +172,16 @@ class _PenghitungTiketState extends State<PenghitungTiket> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text('Total Harga', style: TextStyle(fontWeight: FontWeight.bold)),
+          const Text(
+            'Total Harga',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           Text(
             formatRupiah(total),
-            style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.accent),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppColors.accent,
+            ),
           ),
         ],
       ),
