@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'beranda_screen.dart';
-import '../utils/app_colors.dart';
 
 /// Halaman Splash Screen.
 /// Menampilkan logo dan tagline Travio dengan animasi,
@@ -69,8 +68,8 @@ class _SplashScreenState extends State<SplashScreen>
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const BerandaScreen(),
-          transitionsBuilder: (_, animation, __, child) =>
+          pageBuilder: (context, anim, secAnim) => const BerandaScreen(),
+          transitionsBuilder: (context, animation, secAnimation, child) =>
               FadeTransition(opacity: animation, child: child),
           transitionDuration: const Duration(milliseconds: 500),
         ),
@@ -90,23 +89,30 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFCDE9FF),
-              Color(0xFFE6F4FF),
-              Color(0xFFF7FAFF),
-            ],
-          ),
-        ),
+      body: SizedBox.expand(
         child: Stack(
+          fit: StackFit.expand,
           children: [
-            _buildBackgroundDecorations(),
+            // Background Gambar Splash
+            Image.asset(
+              'assets/other/splash_background.jpg',
+              fit: BoxFit.cover,
+            ),
+            // Gradient Overlay lembut untuk kontras dan estetika
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.white.withValues(alpha: 0.1),
+                    Colors.transparent,
+                    Colors.black.withValues(alpha: 0.35),
+                  ],
+                  stops: const [0.0, 0.5, 1.0],
+                ),
+              ),
+            ),
             _buildContent(),
             _buildBottomTagline(),
           ],
@@ -115,51 +121,11 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  // ── Background Decorative Circles 
-
-  Widget _buildBackgroundDecorations() {
-    return Stack(
-      children: [
-        _circle(top: -90, left: -90, size: 240, opacity: 0.18),
-        _circle(top: 50, right: -50, size: 150, opacity: 0.14, isSecondary: true),
-        _circle(top: 190, left: 16, size: 48, opacity: 0.12),
-        _circle(bottom: -110, right: -70, size: 300, opacity: 0.13),
-        _circle(bottom: 60, left: -70, size: 190, opacity: 0.15, isSecondary: true),
-        _circle(top: 155, right: 72, size: 22, opacity: 0.25),
-      ],
-    );
-  }
-
-  Widget _circle({
-    double? top,
-    double? bottom,
-    double? left,
-    double? right,
-    required double size,
-    required double opacity,
-    bool isSecondary = false,
-  }) {
-    return Positioned(
-      top: top,
-      bottom: bottom,
-      left: left,
-      right: right,
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: (isSecondary ? AppColors.secondary : AppColors.primary)
-              .withOpacity(opacity),
-        ),
-      ),
-    );
-  }
-
-  // ── Center Content 
+  // ── Center/Upper Content 
 
   Widget _buildContent() {
-    return Center(
+    return Align(
+      alignment: const Alignment(0, -0.32),
       child: _buildAnimatedLogo(),
     );
   }
@@ -178,7 +144,7 @@ class _SplashScreenState extends State<SplashScreen>
   Widget _buildLogoWidget() {
     return Image.asset(
       'assets/icons/icon.png',
-      width: 260,
+      width: 270,
       fit: BoxFit.contain,
     );
   }
@@ -187,22 +153,25 @@ class _SplashScreenState extends State<SplashScreen>
 
   Widget _buildBottomTagline() {
     return Positioned(
-      bottom: 40,
+      bottom: 44,
       left: 0,
       right: 0,
       child: AnimatedBuilder(
         animation: _textController,
         builder: (context, child) => Opacity(
           opacity: _textOpacity.value,
-          child: child,
+          child: SlideTransition(
+            position: _textSlide,
+            child: child,
+          ),
         ),
         child: Column(
           children: [
             Container(
-              width: 40,
+              width: 44,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.4),
+                color: Colors.white.withValues(alpha: 0.8),
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
@@ -211,9 +180,17 @@ class _SplashScreenState extends State<SplashScreen>
               'Jelajahi keindahan Indonesia',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[400],
-                letterSpacing: 0.3,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+                letterSpacing: 0.5,
+                shadows: [
+                  Shadow(
+                    color: Colors.black.withValues(alpha: 0.55),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
             ),
           ],
