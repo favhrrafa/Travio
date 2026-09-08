@@ -160,14 +160,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   Widget _buildContent() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildAnimatedLogo(),
-          const SizedBox(height: 36),
-          _buildAnimatedText(),
-        ],
-      ),
+      child: _buildAnimatedLogo(),
     );
   }
 
@@ -185,30 +178,8 @@ class _SplashScreenState extends State<SplashScreen>
   Widget _buildLogoWidget() {
     return Image.asset(
       'assets/icons/icon.png',
-      width: 240,
+      width: 260,
       fit: BoxFit.contain,
-    );
-  }
-
-  Widget _buildAnimatedText() {
-    return AnimatedBuilder(
-      animation: _textController,
-      builder: (context, child) => Opacity(
-        opacity: _textOpacity.value,
-        child: SlideTransition(position: _textSlide, child: child),
-      ),
-      child: Column(
-        children: [
-          Text(
-            'Explore More, Pay Smarter.',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[500],
-              letterSpacing: 0.5,
-            ),
-          ),
-        ],
-      ),
     );
   }
 

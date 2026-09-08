@@ -24,6 +24,7 @@ class _BerandaScreenState extends State<BerandaScreen> {
   int _selectedNavIndex = 0;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  String? _selectedCategory;
 
   static const List<Map<String, dynamic>> _daftarKategori = [
     {'label': 'Alam', 'icon': Icons.landscape},
@@ -34,21 +35,35 @@ class _BerandaScreenState extends State<BerandaScreen> {
 
   // ── Data helpers ─────────────────────────────────────────────
 
-  /// Mengambil dan memfilter daftar wisata populer berdasarkan [_searchQuery].
+  /// Mengambil dan memfilter daftar wisata berdasarkan [_searchQuery] dan [_selectedCategory].
   List<ObjekWisata> _getDestinasPopuler() {
     final semua = getSemuaWisata();
-    final populer = semua.where((w) => w.isPopuler).toList();
-    if (_searchQuery.isEmpty) return populer;
+    final query = _searchQuery.toLowerCase().trim();
 
-    final query = _searchQuery.toLowerCase();
-    return populer
-        .where(
-          (w) =>
-              w.namaObjek.toLowerCase().contains(query) ||
-              w.lokasi.toLowerCase().contains(query) ||
-              w.jenis.toLowerCase().contains(query),
-        )
-        .toList();
+    return semua.where((w) {
+      final matchesQuery = query.isEmpty ||
+          w.namaObjek.toLowerCase().contains(query) ||
+          w.lokasi.toLowerCase().contains(query) ||
+          w.jenis.toLowerCase().contains(query);
+
+      final matchesCategory = _selectedCategory == null ||
+          w.jenis.toLowerCase() == _selectedCategory!.toLowerCase();
+
+      if (query.isNotEmpty || _selectedCategory != null) {
+        return matchesQuery && matchesCategory;
+      }
+      return w.isPopuler && matchesQuery;
+    }).toList();
+  }
+
+  void _onCategoryTap(String category) {
+    setState(() {
+      if (_selectedCategory == category) {
+        _selectedCategory = null;
+      } else {
+        _selectedCategory = category;
+      }
+    });
   }
 
   // ── Event handlers ───────────────────────────────────────────
@@ -269,21 +284,9 @@ class _BerandaScreenState extends State<BerandaScreen> {
   }
 
   Widget _buildBannerGambar() {
-    return Image.network(
-      'https://picsum.photos/seed/travioheroBanner/800/450',
+    return Image.asset(
+      'assets/nature/Gunung Bromo.jpg',
       fit: BoxFit.cover,
-      loadingBuilder: (context, child, progress) {
-        if (progress == null) return child;
-        return Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppColors.primary, AppColors.accent],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        );
-      },
       errorBuilder: (context, error, _) => Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -376,21 +379,27 @@ class _BerandaScreenState extends State<BerandaScreen> {
   }
 
   Widget _buildItemKategori(Map<String, dynamic> kategori) {
+    final isSelected = _selectedCategory == kategori['label'];
     return GestureDetector(
-      onTap: () => _showComingSoonSnackbar(
-        'Kategori ${kategori['label']} — segera hadir!',
-      ),
+      onTap: () => _onCategoryTap(kategori['label'] as String),
       child: Column(
         children: [
-          Container(
-            width: 66,
-            height: 66,
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: 74,
+            height: 74,
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(18),
+              color: isSelected ? AppColors.accent : Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: isSelected ? AppColors.accent : Colors.transparent,
+                width: 2,
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withOpacity(0.18),
+                  color: isSelected
+                      ? AppColors.accent.withOpacity(0.35)
+                      : AppColors.primary.withOpacity(0.18),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -398,17 +407,17 @@ class _BerandaScreenState extends State<BerandaScreen> {
             ),
             child: Icon(
               kategori['icon'] as IconData,
-              color: AppColors.accent,
-              size: 30,
+              color: isSelected ? Colors.white : AppColors.accent,
+              size: 34,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             kategori['label'] as String,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF444444),
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+              color: isSelected ? AppColors.accent : const Color(0xFF444444),
             ),
           ),
         ],
@@ -432,40 +441,57 @@ class _BerandaScreenState extends State<BerandaScreen> {
   }
 
   Widget _buildHeaderSeksi() {
+    final title = _selectedCategory != null
+        ? 'Wisata ${_selectedCategory!}'
+        : (_searchQuery.isNotEmpty ? 'Hasil Pencarian' : 'Destinasi Populer');
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 22, 20, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
-            'Destinasi Populer',
-            style: TextStyle(
+          Text(
+            title,
+            style: const TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w800,
               color: Color(0xFF1A1A2E),
             ),
           ),
-          GestureDetector(
-            onTap: _showComingSoonSnackbar,
-            child: Row(
-              children: [
-                const Text(
-                  'Lihat Semua',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.accent,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(width: 2),
-                const Icon(
-                  Icons.arrow_forward_ios,
-                  size: 11,
+          if (_selectedCategory != null)
+            GestureDetector(
+              onTap: () => setState(() => _selectedCategory = null),
+              child: const Text(
+                'Tampilkan Semua',
+                style: TextStyle(
+                  fontSize: 13,
                   color: AppColors.accent,
+                  fontWeight: FontWeight.w600,
                 ),
-              ],
+              ),
+            )
+          else
+            GestureDetector(
+              onTap: _showComingSoonSnackbar,
+              child: const Row(
+                children: [
+                  Text(
+                    'Lihat Semua',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.accent,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(width: 2),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 11,
+                    color: AppColors.accent,
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -473,7 +499,7 @@ class _BerandaScreenState extends State<BerandaScreen> {
 
   Widget _buildListPopuler(List<ObjekWisata> populer) {
     return SizedBox(
-      height: 218,
+      height: 232,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -488,14 +514,14 @@ class _BerandaScreenState extends State<BerandaScreen> {
     return GestureDetector(
       onTap: _showComingSoonSnackbar,
       child: Container(
-        width: 166,
+        width: 174,
         margin: const EdgeInsets.only(right: 14),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withOpacity(0.07),
               blurRadius: 14,
               offset: const Offset(0, 5),
             ),
@@ -520,32 +546,7 @@ class _BerandaScreenState extends State<BerandaScreen> {
           SizedBox(
             height: 120,
             width: double.infinity,
-            child: Image.network(
-              wisata.imageUrl,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, progress) {
-                if (progress == null) return child;
-                return Container(
-                  color: AppColors.primary.withOpacity(0.12),
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                );
-              },
-              errorBuilder: (context, error, _) => Container(
-                color: AppColors.primary.withOpacity(0.15),
-                child: Center(
-                  child: Icon(
-                    Icons.landscape,
-                    color: AppColors.primary,
-                    size: 40,
-                  ),
-                ),
-              ),
-            ),
+            child: _buildGambarWisata(wisata.imageUrl),
           ),
           // Badge jenis wisata
           Positioned(
@@ -554,8 +555,15 @@ class _BerandaScreenState extends State<BerandaScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: AppColors.accent.withOpacity(0.85),
+                color: AppColors.accent.withOpacity(0.9),
                 borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.18),
+                    blurRadius: 4,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
               ),
               child: Text(
                 wisata.jenis,
@@ -572,9 +580,46 @@ class _BerandaScreenState extends State<BerandaScreen> {
     );
   }
 
+  Widget _buildGambarWisata(String url) {
+    if (url.startsWith('assets/')) {
+      return Image.asset(
+        url,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => Container(
+          color: AppColors.primary.withOpacity(0.15),
+          child: const Center(
+            child: Icon(Icons.landscape, color: AppColors.primary, size: 40),
+          ),
+        ),
+      );
+    }
+    return Image.network(
+      url,
+      fit: BoxFit.cover,
+      loadingBuilder: (context, child, progress) {
+        if (progress == null) return child;
+        return Container(
+          color: AppColors.primary.withOpacity(0.12),
+          child: const Center(
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: AppColors.primary,
+            ),
+          ),
+        );
+      },
+      errorBuilder: (context, error, _) => Container(
+        color: AppColors.primary.withOpacity(0.15),
+        child: const Center(
+          child: Icon(Icons.landscape, color: AppColors.primary, size: 40),
+        ),
+      ),
+    );
+  }
+
   Widget _buildKartuInfo(ObjekWisata wisata) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+      padding: const EdgeInsets.fromLTRB(11, 8, 11, 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -591,12 +636,16 @@ class _BerandaScreenState extends State<BerandaScreen> {
           ),
           Row(
             children: [
-              Icon(Icons.location_on, size: 11, color: Colors.grey[400]),
+              Icon(Icons.location_on, size: 12, color: Colors.grey[400]),
               const SizedBox(width: 2),
               Expanded(
                 child: Text(
                   '${wisata.lokasi} • ${wisata.jenis}',
-                  style: TextStyle(fontSize: 11, color: Colors.grey[400]),
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.grey[500],
+                    fontWeight: FontWeight.w500,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -605,24 +654,47 @@ class _BerandaScreenState extends State<BerandaScreen> {
           ),
           Row(
             children: [
-              const Icon(Icons.star, color: Color(0xFFFFA000), size: 13),
-              const SizedBox(width: 3),
+              const Icon(Icons.star_rounded, color: Color(0xFFFFA000), size: 15),
+              const SizedBox(width: 2),
               Text(
-                '${wisata.rating} (${formatUlasan(wisata.jumlahUlasan)})',
+                '${wisata.rating}',
                 style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF222222),
+                ),
+              ),
+              const SizedBox(width: 2),
+              Text(
+                '(${formatUlasan(wisata.jumlahUlasan)})',
+                style: TextStyle(
+                  fontSize: 10.5,
+                  color: Colors.grey[400],
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
           ),
-          Text(
-            formatRupiah(wisata.tiketDewasa),
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w800,
-              color: AppColors.accent,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                formatRupiah(wisata.tiketDewasa),
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.accent,
+                ),
+              ),
+              Text(
+                '/tiket',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Colors.grey[400],
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
         ],
       ),

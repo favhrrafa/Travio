@@ -17,7 +17,7 @@ class TravioApp extends StatelessWidget {
       title: 'Travio',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        textTheme: GoogleFonts.nunitoTextTheme(
+        textTheme: GoogleFonts.plusJakartaSansTextTheme(
           Theme.of(context).textTheme,
         ),
         primaryColor: AppColors.primary,
