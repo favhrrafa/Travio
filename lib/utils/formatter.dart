@@ -11,7 +11,7 @@ String formatRupiah(num nilai) {
 }
 
 /// Memformat jumlah ulasan menjadi singkatan yang mudah dibaca.
-/// Contoh: 1200 → "1.2k", 500 → "500"
+/// Contoh: 1200 → "1.2k"
 String formatUlasan(int jumlah) {
   if (jumlah >= 1000) {
     final double nilai = jumlah / 1000;

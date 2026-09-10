@@ -798,11 +798,6 @@ class _BerandaScreenState extends State<BerandaScreen> {
             label: 'Destinasi',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.confirmation_number_outlined),
-            activeIcon: Icon(Icons.confirmation_number),
-            label: 'Tiket',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
             activeIcon: Icon(Icons.person),
             label: 'Profil',

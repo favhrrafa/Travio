@@ -541,8 +541,10 @@ class _DetailScreenState extends State<DetailScreen> {
                 ),
                 PenghitungTiket(
                   namaObjek: widget.wisata.namaObjek,
+                  jenis: widget.wisata.jenis,
                   hargaDewasa: widget.wisata.tiketDewasa,
                   hargaAnak: widget.wisata.tiketAnak,
+                  kuotaHarian: widget.wisata.kuotaHarian,
                 ),
               ],
             ),
